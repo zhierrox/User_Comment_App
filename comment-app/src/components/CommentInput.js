@@ -3,65 +3,96 @@ import PropTypes from 'prop-types';
 
 class CommentInput extends Component {
     static propTypes = {
-        onSubmit: PropTypes.func
+        username: PropTypes.any,
+        onSubmit: PropTypes.func,
+        onUserNameInputBlur: PropTypes.func,
+        onContentInputBlur: PropTypes.func,
+        _cleanContent: PropTypes.func
     }
 
-    constructor() {
-        super();
+    static defaultProps = {
+        username: '',
+        content: ''
+    }
+
+    constructor(props) {
+        super(props);
         this.state = {
-            username: '',
-            content: ''
+            username: props.username,
+            content: props.content
         };
     }
 
-    componentWillMount() {
-        this._loadUsername();
-        this._loadContent() 
-    }
+    // componentWillMount() {
+    //     this._loadUsername();
+    //     this._loadContent() 
+    // }
 
     componentDidMount() {
         this.textarea.focus();
     }
 
-    _loadUsername() {
-        let username = localStorage.getItem('username');
-        this.setState({ username });
+    handleUsernameBlur(event) {
+        if (this.props.onUserNameInputBlur) {
+            this.props.onUserNameInputBlur(event.target.value);
+        }
     }
 
-    _loadContent() {
-        let content = localStorage.getItem('content');
-        this.setState({ content })
-    }
-
-    _saveUsername(username) {
-        localStorage.setItem('username', username);
-    }
-
-    _saveContent(content) {
-        localStorage.setItem('content', content)
+    handleContentBlur(event) {
+        if (this.props.onContentInputBlur) {
+            this.props.onContentInputBlur(event.target.value);
+        }
     }
 
     _cleanContent() {
         this.setState({ content: '' }) //clean content area
-        localStorage.setItem('content', ""); // 避免已经提交的content，也会重新加载
+        this.props._cleanContent();
+        // localStorage.setItem('content', ""); // 避免已经提交的content，也会重新加载
     }
 
-    handleUsernameBlur(event) {
-        this._saveUsername(event.target.value);
-    }
+    // _loadUsername() {
+    //     let username = localStorage.getItem('username');
+    //     this.setState({ username });
+    // }
 
-    // 已经提交的content，也会重新加载
-    handleContentBlur(event) {
-        this._saveContent(event.target.value);
-    }
+    // _loadContent() {
+    //     let content = localStorage.getItem('content');
+    //     this.setState({ content })
+    // }
+
+    // _saveUsername(username) {
+    //     localStorage.setItem('username', username);
+    // }
+
+    // _saveContent(content) {
+    //     localStorage.setItem('content', content)
+    // }
+
+    // _cleanContent() {
+    //     this.setState({ content: '' }) //clean content area
+    //     localStorage.setItem('content', ""); // 避免已经提交的content，也会重新加载
+    // }
+
+    // handleUsernameBlur(event) {
+    //     this._saveUsername(event.target.value);
+    // }
+
+    // // 已经提交的content，也会重新加载
+    // handleContentBlur(event) {
+    //     this._saveContent(event.target.value);
+    // }
 
     handleUsernameChange(event) {
-        this.setState({username: event.target.value});
+        this.setState({
+            username: event.target.value
+        });
     }
 
     
     handleContentChange(event) {
-        this.setState({content: event.target.value});
+        this.setState({
+            content: event.target.value
+        });
     }
 
     handleSubmit() {
